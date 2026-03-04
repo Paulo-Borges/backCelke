@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppDataSource = void 0;
 require("reflect-metadata");
 const typeorm_1 = require("typeorm");
+const User_1 = require("./entity/User");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "mysql",
     host: "localhost",
@@ -12,8 +13,8 @@ exports.AppDataSource = new typeorm_1.DataSource({
     database: "celke",
     synchronize: true,
     logging: true,
-    entities: [],
+    entities: [User_1.User],
     subscribers: [],
-    migrations: [],
+    migrations: [__dirname + "/migration/*.js"],
 });
 //# sourceMappingURL=data-source.js.map
