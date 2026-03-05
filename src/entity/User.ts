@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity()
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -8,16 +8,16 @@ export class User {
   @Column()
   name!: string;
 
-  @Column()
+  @Column({})
   email!: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt!: Date;
 
   @Column({
     type: "timestamp",
-    default: () => "CURRENT_TMESTAMP",
-    onUpdated: "CURRENT_TMESTAMP",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
   })
   updatedAt!: Date;
 }

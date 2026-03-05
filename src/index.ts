@@ -1,19 +1,16 @@
 import express, { Request, Response } from "express";
 
-// Importar o arquivo com as credenciais do Banco de Dados
-import { AppDataSource } from "./data-source";
-
 // Criar a aplicação express
 const app = express();
 
-// Iniciar a conexão com o Banco de Dados
-AppDataSource.initialize()
-  .then(() => {
-    console.log("conexão com o banco de dados realizada com SUCESSO!");
-  })
-  .catch((error) => {
-    console.log("Erro na conexão com o banco de dados", error);
-  });
+// Criar o middleware para receber os dados no corpo da requisição
+app.use(express.json());
+
+// Incluir as CONTROLLERS
+import UsersController from "./controllers/UsersController";
+
+// Criar as rotas
+app.use("/", UsersController);
 
 // Criar a rota GET principal
 app.get("/", (req: Request, res: Response) => {
