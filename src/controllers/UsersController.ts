@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 // Importar a entidade
 import { User } from "../entity/User";
+import { Not } from "typeorm";
 // Criar aplicação Express
 const router = express.Router();
 
@@ -61,7 +62,43 @@ router.get("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Criar a rota para EDITAR usuário
+// Criar a rota para Apagar (DELETE) usuário
+router.delete("/users/:id", async (req: Request, res: Response) => {
+  try {
+    // Obter ID do usuário
+    const { id } = req.params;
+    // Obter o repositório da entidade User
+    const userRepository = AppDataSource.getRepository(User);
+
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ message: "ID inválido" });
+    }
+
+    // Obter o repositório da entidade User
+    const user = await userRepository.findOneBy({ id: parseInt(id) });
+    // verificar se o usuário foi encontrado!
+    if (!user) {
+      res.status(404).json({
+        message: "Usuário não encontrado!",
+      });
+      return;
+    }
+
+    // Remover usuário do Banco de dados
+    await userRepository.remove(user);
+    // Retornar resposta de sucesso!
+    res.status(200).json({
+      message: "Usuário deletado com sucesso!",
+    });
+  } catch (error) {
+    // Retorna em caso de falha
+    res.status(500).json({
+      message: "Error ao apagar Usuário",
+    });
+  }
+});
+
+// Criar a rota para EDITAR(POST) usuário
 router.put("/users/:id", async (req: Request, res: Response) => {
   try {
     // Obter ID do usuario
@@ -89,9 +126,31 @@ router.put("/users/:id", async (req: Request, res: Response) => {
       return;
     }
 
+    // Verificar se ja existe outro usuario com o mesmo email, e que não seja o atual
+    const existingUser = await userRepository.findOne({
+      where: {
+        email: data.email,
+        id: Not(parseInt(id)), // Excluir o registro de busca
+      },
+    });
+
+    // Excluir o registro de busca
+    if (existingUser) {
+      res.status(400).json({
+        message: "Já existe um usuario cadastrado com esse email!",
+      });
+      return;
+    }
+
+    // Atualizar os dados do usuário
+    userRepository.merge(user, data);
+
+    // Salvar alterções no banco de dados
+    const updateUser = await userRepository.save(user);
+
     res.status(200).json({
       message: "Usuario atualizado com sucesso!",
-      user: data,
+      user: updateUser,
     });
   } catch (error) {
     res.status(500).json({
@@ -100,7 +159,7 @@ router.put("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Criar a rota para cadastrar usuário
+// Criar a rota para cadastrar(POST) usuário
 router.post("/users", async (req: Request, res: Response) => {
   try {
     // receber os dados enviados no corpo da requisição
