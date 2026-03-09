@@ -33,6 +33,11 @@ router.get("/users/:id", async (req: Request, res: Response) => {
 
     // Obter o repositório da entidade User
     const userRepository = AppDataSource.getRepository(User);
+
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ message: "ID inválido" });
+    }
+
     // Buscar o usuario no banco de dados pelo ID
     const user = await userRepository.findOneBy({ id: parseInt(id) });
     // Verificar se o usuário fo encontrado
@@ -69,6 +74,9 @@ router.put("/users/:id", async (req: Request, res: Response) => {
     // Obter o repositório da entidade User
     const userRepository = AppDataSource.getRepository(User);
 
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ message: "ID inválido" });
+    }
     // Buscar no banco de dados pelo ID
     const user = await userRepository.findOneBy({ id: parseInt(id) });
 
