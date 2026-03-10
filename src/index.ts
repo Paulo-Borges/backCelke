@@ -1,10 +1,16 @@
 import express, { Request, Response } from "express";
 
+// Importar a biblioteca para permitir conexão externa
+import cors from "cors";
+
 // Criar a aplicação express
 const app = express();
 
 // Criar o middleware para receber os dados no corpo da requisição
 app.use(express.json());
+
+// Criar o middleware para permitir conexão externa
+app.use(cors());
 
 // Incluir as CONTROLLERS
 import UsersController from "./controllers/UsersController";
