@@ -20,7 +20,7 @@ app.use("/", UsersController);
 
 // Criar a rota GET principal
 app.get("/", (req: Request, res: Response) => {
-  res.send("Bem vindo Borges!");
+  res.send("Bem vindo Desenvolvedor Borges!");
 });
 
 // Iniciar o servidor na porta 8080
