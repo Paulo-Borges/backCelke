@@ -18,7 +18,7 @@ const UsersController_1 = __importDefault(require("./controllers/UsersController
 app.use("/", UsersController_1.default);
 // Criar a rota GET principal
 app.get("/", (req, res) => {
-    res.send("Bem vindo Borges!");
+    res.send("Bem vindo Desenvolvedor Borges!");
 });
 // Iniciar o servidor na porta 8080
 app.listen(8080, () => {
